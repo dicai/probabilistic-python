@@ -88,7 +88,7 @@ class RandomWalkKernel:
 		# and generate another sample (this may not actually be deterministic,
 		# in the case of nested query)
 		if name == None:
-			currTrace.traceUpdate(not structural)
+			currTrace.traceUpdate(not self.structural)
 			return currTrace
 		# Otherwise, make a proposal for a randomly-chosen variable, probabilistically
 		# accept it
@@ -128,14 +128,13 @@ class LARJInterpolationTrace(object):
 
 	@property
 	def returnValue(self):
-		return trace2.returnValue
+		return self.trace2.returnValue
 
 	def freeVarNames(self, structural=True, nonstructural=True):
 		return list(set(self.trace1.freeVarNames(structural, nonstructural) + \
 						self.trace2.freeVarNames(structural, nonstructural)))
 
 	def proposeChange(self, varname):
-		assert(structureIsFixed)
 		var1 = self.trace1.getRecord(varname)
 		var2 = self.trace2.getRecord(varname)
 		nextTrace = LARJInterpolationTrace(copy.deepcopy(self.trace1) if var1 else self.trace1, \
@@ -201,7 +200,7 @@ class LARJKernel:
 			return nextTrace
 
 	def jumpStep(self, currTrace):
-		
+
 		self.jumpProposalsMade += 1
 		oldStructTrace = copy.deepcopy(currTrace)
 		newStructTrace = copy.deepcopy(currTrace)
